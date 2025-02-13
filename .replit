@@ -19,6 +19,10 @@ author = "agent"
 task = "workflow.run"
 args = "Flask Server"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "MongoDB"
+
 [[workflows.workflow]]
 name = "Flask Server"
 author = "agent"
@@ -33,6 +37,21 @@ task = "packager.installForAll"
 task = "shell.exec"
 args = "python main.py"
 waitForPort = 5000
+
+[[workflows.workflow]]
+name = "MongoDB"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "mongod --dbpath /tmp/mongodb"
+waitForPort = 27017
 
 [[ports]]
 localPort = 5000
