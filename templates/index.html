@@ -11,7 +11,9 @@
 <body>
     <nav class="navbar navbar-dark bg-dark mb-4">
         <div class="container">
-            <span class="navbar-brand mb-0 h1">User Management System</span>
+            <span class="navbar-brand mb-0 h1">
+                <i class="fas fa-users me-2"></i>User Management System
+            </span>
             <div>
                 <a href="/dashboard" class="btn btn-outline-light">
                     <i class="fas fa-chart-line me-2"></i>Dashboard
@@ -27,25 +29,34 @@
         <!-- User Form -->
         <div class="card mb-4">
             <div class="card-header">
-                <h5 class="card-title mb-0">Add/Edit User</h5>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-plus fa-lg text-primary me-3"></i>
+                    <h5 class="card-title mb-0">Add/Edit User</h5>
+                </div>
             </div>
             <div class="card-body">
                 <form id="userForm">
                     <input type="hidden" id="userId">
                     <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
+                        <label for="name" class="form-label">
+                            <i class="fas fa-user me-2"></i>Name
+                        </label>
                         <input type="text" class="form-control" id="name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
+                        <label for="email" class="form-label">
+                            <i class="fas fa-envelope me-2"></i>Email
+                        </label>
                         <input type="email" class="form-control" id="email" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-2"></i>Save User
-                    </button>
-                    <button type="button" class="btn btn-secondary" id="resetForm">
-                        <i class="fas fa-times me-2"></i>Cancel
-                    </button>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save User
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="resetForm">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -53,17 +64,28 @@
         <!-- Users Table -->
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title mb-0">Users List</h5>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-list fa-lg text-primary me-3"></i>
+                    <h5 class="card-title mb-0">Users List</h5>
+                </div>
             </div>
-            <div class="card-body">
+            <div class="card-body position-relative">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Created At</th>
-                                <th>Actions</th>
+                                <th>
+                                    <i class="fas fa-user me-2"></i>Name
+                                </th>
+                                <th>
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </th>
+                                <th>
+                                    <i class="fas fa-calendar me-2"></i>Created At
+                                </th>
+                                <th>
+                                    <i class="fas fa-cog me-2"></i>Actions
+                                </th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody">
@@ -71,7 +93,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="loadingIndicator" class="text-center d-none">
+                <div id="loadingIndicator" class="loading-overlay d-none">
                     <div class="spinner-border text-primary" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
