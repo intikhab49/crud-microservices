@@ -2,6 +2,9 @@ from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 import logging
 import os
+from datetime import datetime, timedelta
+from collections import Counter
+from sqlalchemy import func
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -24,6 +27,79 @@ with app.app_context():
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/dashboard')
+def dashboard():
+    try:
+        # Calculate statistics
+        stats = {
+            'total_users': User.query.count(),
+            'new_users_today': User.query.filter(
+                User.created_at >= datetime.utcnow().date()
+            ).count(),
+            'top_domain': get_top_email_domain()
+        }
+
+        # Get recent users
+        recent_users = User.query.order_by(User.created_at.desc()).limit(5).all()
+
+        # Get registration trend data
+        chart_data = get_registration_trend()
+
+        return render_template('dashboard.html',
+                             stats=stats,
+                             recent_users=recent_users,
+                             chart_data=chart_data)
+    except Exception as e:
+        logging.error(f"Error in dashboard route: {str(e)}")
+        return jsonify({'error': 'Error loading dashboard'}), 500
+
+def get_top_email_domain():
+    try:
+        users = User.query.all()
+        domains = [user.email.split('@')[1] for user in users]
+        if not domains:
+            return "N/A"
+        return Counter(domains).most_common(1)[0][0]
+    except Exception:
+        return "N/A"
+
+def get_registration_trend():
+    try:
+        # Get the last 7 days of registration data
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=6)
+
+        # Query daily registration counts
+        daily_counts = db.session.query(
+            func.date(User.created_at).label('date'),
+            func.count().label('count')
+        ).filter(
+            User.created_at >= start_date
+        ).group_by(
+            func.date(User.created_at)
+        ).all()
+
+        # Convert to dict for easy lookup
+        counts_dict = {str(date): count for date, count in daily_counts}
+
+        # Generate labels and values for all days
+        labels = []
+        values = []
+        current_date = start_date
+        while current_date <= end_date:
+            date_str = current_date.strftime('%Y-%m-%d')
+            labels.append(date_str)
+            values.append(counts_dict.get(date_str, 0))
+            current_date += timedelta(days=1)
+
+        return {
+            'labels': labels,
+            'values': values
+        }
+    except Exception as e:
+        logging.error(f"Error generating registration trend: {str(e)}")
+        return {'labels': [], 'values': []}
 
 @app.route('/users', methods=['GET'])
 def get_users():
