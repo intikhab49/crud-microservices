@@ -13,4 +13,8 @@ dependencies = [
     "python-dateutil>=2.9.0.post0",
     "flask-pymongo>=3.0.1",
     "pymongo>=4.11.1",
+    "flask-login>=0.6.3",
+    "flask-wtf>=1.2.2",
+    "sqlalchemy>=2.0.38",
+    "oauthlib>=3.2.2",
 ]
