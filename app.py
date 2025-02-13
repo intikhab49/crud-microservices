@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+from flask_pymongo import PyMongo
+from bson.objectid import ObjectId
 import logging
 import os
+from models import User
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
@@ -11,13 +13,9 @@ logging.basicConfig(level=logging.DEBUG)
 app = Flask(__name__)
 CORS(app)
 
-# Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# Import models after db initialization
-from models import User
+# MongoDB configuration
+app.config['MONGO_URI'] = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/user_management')
+mongo = PyMongo(app)
 
 @app.route('/')
 def home():
@@ -25,8 +23,12 @@ def home():
 
 @app.route('/users', methods=['GET'])
 def get_users():
-    users = User.query.all()
-    return jsonify([user.to_dict() for user in users])
+    try:
+        users = list(mongo.db.users.find())
+        return jsonify([User.from_db_document(user).to_dict() for user in users])
+    except Exception as e:
+        logging.error(f"Database error: {str(e)}")
+        return jsonify({'error': 'Database connection error'}), 500
 
 @app.route('/users', methods=['POST'])
 def create_user():
@@ -34,62 +36,63 @@ def create_user():
     if not data or 'name' not in data or 'email' not in data:
         return jsonify({'error': 'Name and email are required'}), 400
 
-    existing_user = User.query.filter_by(email=data['email']).first()
-    if existing_user:
-        return jsonify({'error': 'Email already exists'}), 400
-
-    user = User(name=data['name'], email=data['email'])
-    db.session.add(user)
-
     try:
-        db.session.commit()
+        existing_user = mongo.db.users.find_one({'email': data['email']})
+        if existing_user:
+            return jsonify({'error': 'Email already exists'}), 400
+
+        user = User(name=data['name'], email=data['email'])
+        result = mongo.db.users.insert_one(user.to_document())
+        user._id = result.inserted_id
         return jsonify(user.to_dict()), 201
     except Exception as e:
-        db.session.rollback()
         logging.error(f"Error creating user: {str(e)}")
-        return jsonify({'error': 'Failed to create user'}), 500
+        return jsonify({'error': 'Database error occurred'}), 500
 
-@app.route('/users/<int:user_id>', methods=['PUT'])
+@app.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
     data = request.json
     if not data or 'name' not in data or 'email' not in data:
         return jsonify({'error': 'Name and email are required'}), 400
 
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-
-    existing_user = User.query.filter(User.email == data['email'], User.id != user_id).first()
-    if existing_user:
-        return jsonify({'error': 'Email already exists'}), 400
-
-    user.name = data['name']
-    user.email = data['email']
-
     try:
-        db.session.commit()
-        return jsonify(user.to_dict())
+        user_doc = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        if not user_doc:
+            return jsonify({'error': 'User not found'}), 404
+
+        existing_user = mongo.db.users.find_one({
+            'email': data['email'],
+            '_id': {'$ne': ObjectId(user_id)}
+        })
+        if existing_user:
+            return jsonify({'error': 'Email already exists'}), 400
+
+        update_result = mongo.db.users.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {
+                'name': data['name'],
+                'email': data['email']
+            }}
+        )
+
+        if update_result.modified_count:
+            updated_user = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+            return jsonify(User.from_db_document(updated_user).to_dict())
+        return jsonify({'error': 'No changes made'}), 400
     except Exception as e:
-        db.session.rollback()
         logging.error(f"Error updating user: {str(e)}")
-        return jsonify({'error': 'Failed to update user'}), 500
+        return jsonify({'error': 'Database error occurred'}), 500
 
-@app.route('/users/<int:user_id>', methods=['DELETE'])
+@app.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
-
     try:
-        db.session.delete(user)
-        db.session.commit()
-        return '', 204
+        result = mongo.db.users.delete_one({'_id': ObjectId(user_id)})
+        if result.deleted_count:
+            return '', 204
+        return jsonify({'error': 'User not found'}), 404
     except Exception as e:
-        db.session.rollback()
         logging.error(f"Error deleting user: {str(e)}")
-        return jsonify({'error': 'Failed to delete user'}), 500
+        return jsonify({'error': 'Database error occurred'}), 500
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)
