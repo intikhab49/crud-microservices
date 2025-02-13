@@ -1,0 +1,87 @@
+Generate a **full-stack CRUD application** using **React (Vite) for the frontend**, **Flask for the backend**, and **MongoDB as the database**, all containerized using **Docker Compose**.
+
+## **Backend (Flask + Flask-PyMongo)**
+1. Use Flask to create a **REST API**.
+2. Use **Flask-PyMongo** to connect to a **MongoDB database**.
+3. Implement the following CRUD operations:
+   - `GET /users` → Fetch all users.
+   - `POST /users` → Add a new user.
+   - `PUT /users/<id>` → Update an existing user.
+   - `DELETE /users/<id>` → Delete a user.
+4. Use **Pydantic** for request validation.
+5. Implement **CORS handling** to allow frontend requests.
+6. Serve the **frontend build** from Flask in production.
+
+## **Frontend (React + Vite)**
+1. Use **React with Vite** for a fast frontend.
+2. Implement a UI with **Material-UI** or **Bootstrap**.
+3. Features:
+   - Fetch and display users in a table.
+   - Add, update, and delete users via a form.
+   - Handle API requests with **Axios**.
+   - Use **React Router** for navigation.
+   - Handle loading states and error messages.
+
+## **Dockerization**
+1. **Backend (Flask)**
+   - Write a `Dockerfile` for the Flask backend.
+   - Expose port `5000`.
+   - Install dependencies inside the container.
+
+2. **Frontend (React Vite)**
+   - Write a `Dockerfile` for the React app.
+   - Expose port `3000`.
+   - Proxy API requests to Flask.
+
+3. **MongoDB**
+   - Use **MongoDB as a Docker service**.
+   - Create a **MongoDB volume** for persistent storage.
+
+4. **Docker Compose**:
+   - Define services for **frontend, backend, and database**.
+   - Ensure all containers are linked.
+
+## **Project Structure**
+my-crud-app/ │── backend/ (Flask API) │ ├── app.py │ ├── models.py │ ├── routes.py │ ├── requirements.txt │ ├── Dockerfile │ ├── config.py │── frontend/ (React Vite) │ ├── src/ │ ├── public/ │ ├── package.json │ ├── Dockerfile │── docker-compose.yml │── README.md
+
+yaml
+Copy
+Edit
+
+## **Docker Compose (`docker-compose.yml`)**
+Create a `docker-compose.yml` file that includes:
+```yaml
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  mongo:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+Additional Requirements
+Provide a README.md with setup instructions.
+Include .env support for storing environment variables.
+Ensure MongoDB container persists data.
+API and frontend should be fully connected and work inside Docker.
