@@ -81,7 +81,7 @@ def get_registration_trend():
         ).all()
 
         # Convert to dict for easy lookup
-        counts_dict = {str(date): count for date, count in daily_counts}
+        counts_dict = {date.strftime('%Y-%m-%d'): count for date, count in daily_counts}
 
         # Generate labels and values for all days
         labels = []
