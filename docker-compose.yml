@@ -5,29 +5,32 @@ services:
     build: .
     ports:
       - "5000:5000"
-    environment:
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+    env_file:
+      - .env  # Load environment variables from .env file
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/app
+    command: gunicorn -w 4 -b 0.0.0.0:5000 app:app
     networks:
       - app-network
 
   db:
     image: postgres:15
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+    env_file:
+      - .env  # Load database credentials from .env
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   app-network:
