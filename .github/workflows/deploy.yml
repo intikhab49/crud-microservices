@@ -1,0 +1,16 @@
+name: Build and Push
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build Nginx
+      run: docker build -t intikhab49/nginx-custom:latest ./nginx
+    - name: Build Web
+      run: docker build -t intikhab49/web-app:latest ./web
+    - name: Push to Docker Hub
+      run: |
+        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u intikhab49 --password-stdin
+        docker push intikhab49/nginx-custom:latest
+        docker push intikhab49/web-app:latest

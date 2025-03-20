@@ -1,26 +1,26 @@
-# Use Python 3.11 slim image
 FROM python:3.11-slim
-
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
-    && rm -rf /var/lib/apt/lists/*
+    curl \
+    dnsutils && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 
-# Copy requirements first to leverage Docker cache
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
 COPY . .
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
+RUN chmod +x start.sh
 
-# Expose port
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+RUN useradd -m -r appuser && chown appuser:appuser /app
+USER appuser
+
 EXPOSE 5000
-
-# Command to run the application
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["./start.sh"]

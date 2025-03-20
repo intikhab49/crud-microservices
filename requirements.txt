@@ -1,6 +1,5 @@
-Flask
-Flask-Cors
-Flask-SQLAlchemy
-psycopg2-binary
-gunicorn  # For production
-python-dotenv
+Flask==3.0.2
+Flask-SQLAlchemy==3.1.1
+psycopg2-binary==2.9.9
+gunicorn==23.0.0
+python-dotenv==1.0.1

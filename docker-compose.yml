@@ -1,40 +1,58 @@
 version: '3.8'
-
 services:
-  web:
-    build: .
-    ports:
-      - "5000:5000"
-    env_file:
-      - .env  # Load environment variables from .env file
-    depends_on:
-      db:
-        condition: service_healthy
-    volumes:
-      - .:/app
-    command: gunicorn -w 4 -b 0.0.0.0:5000 app:app
-    networks:
-      - app-network
-
   db:
-    image: postgres:15
-    env_file:
-      - .env  # Load database credentials from .env
-    ports:
-      - "5432:5432"
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mydb
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - app-network
+      - db-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mydb"]
+      interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - app_net
+
+  web:
+    image: localhost:5000/myapp-web:latest
+    deploy:
+      mode: replicated
+      replicas: 3
+      resources:
+        limits:
+          memory: 2048M
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb
+      - FLASK_ENV=development  # Optional: adds test user
+    depends_on:
+      - db
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    networks:
+      - app_net
+
+  nginx:
+    image: localhost:5000/myapp-nginx:latest
+    deploy:
+      mode: global
+    ports:
+      - "9000:80"
+    depends_on:
+      - web
+    networks:
+      - app_net
 
 networks:
-  app-network:
-    driver: bridge
+  app_net:
+    driver: overlay
+    attachable: true
 
 volumes:
-  postgres_data:
+  db-data:

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: myapp-web:latest # Replace with your timestamp
+        imagePullPolicy: Never
+        env:
+        - name: DATABASE_URL
+          value: postgresql://postgres:password@postgres:5432/mydb
+        - name: FLASK_ENV
+          value: development
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            memory: "512Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 5000
+    targetPort: 5000
+  type: ClusterIP

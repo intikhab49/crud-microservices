@@ -1,0 +1,432 @@
+=== Describing pod/nginx-5758b94c44-ltgw4 ===
+Name:             nginx-5758b94c44-ltgw4
+Namespace:        crud-app
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 13 Mar 2025 17:58:05 +0500
+Labels:           app=nginx
+                  pod-template-hash=5758b94c44
+Annotations:      <none>
+Status:           Pending
+IP:               
+IPs:              <none>
+Controlled By:    ReplicaSet/nginx-5758b94c44
+Containers:
+  nginx:
+    Container ID:   
+    Image:          intikhab49/myapp-nginx:latest
+    Image ID:       
+    Port:           80/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       ContainerCreating
+    Ready:          False
+    Restart Count:  0
+    Readiness:      http-get http://:80/health delay=10s timeout=5s period=10s #success=1 #failure=3
+    Environment:    <none>
+    Mounts:
+      /etc/nginx/nginx.conf from nginx-config (rw,path="nginx.conf")
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-cptr8 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  nginx-config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      nginx-config
+    Optional:  false
+  kube-api-access-cptr8:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  15m   default-scheduler  Successfully assigned crud-app/nginx-5758b94c44-ltgw4 to minikube
+  Normal  Pulling    15m   kubelet            Pulling image "intikhab49/myapp-nginx:latest"
+  Normal  Pulled     14m   kubelet            Successfully pulled image "intikhab49/myapp-nginx:latest" in 4.329s (47.446s including waiting). Image size: 40998460 bytes.
+  Normal  Created    14m   kubelet            Created container: nginx
+  Normal  Started    14m   kubelet            Started container nginx
+\n\n
+=== Describing pod/postgres-0 ===
+Name:             postgres-0
+Namespace:        crud-app
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 13 Mar 2025 17:58:06 +0500
+Labels:           app=postgres
+                  apps.kubernetes.io/pod-index=0
+                  controller-revision-hash=postgres-66c4b7fb8
+                  statefulset.kubernetes.io/pod-name=postgres-0
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.59
+IPs:
+  IP:           10.244.0.59
+Controlled By:  StatefulSet/postgres
+Containers:
+  postgres:
+    Container ID:   docker://5f27aa530509b40a04540d1cf56b3a3734b4f43080c1ec066c792dc31456e5c3
+    Image:          postgres:14-alpine
+    Image ID:       docker-pullable://postgres@sha256:8430d17c310fe23e0b7dc930dad8b1020221f35a43545705b5dfad6ad40786d9
+    Port:           5432/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Thu, 13 Mar 2025 17:58:10 +0500
+    Ready:          True
+    Restart Count:  0
+    Liveness:       exec [pg_isready -U postgres -d mydb] delay=15s timeout=5s period=10s #success=1 #failure=3
+    Readiness:      exec [pg_isready -U postgres -d mydb] delay=5s timeout=5s period=10s #success=1 #failure=3
+    Environment:
+      POSTGRES_USER:      postgres
+      POSTGRES_PASSWORD:  postgres
+      POSTGRES_DB:        mydb
+    Mounts:
+      /var/lib/postgresql/data from postgres-data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-bbnbb (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  postgres-data:
+    Type:       PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:  postgres-data-postgres-0
+    ReadOnly:   false
+  kube-api-access-bbnbb:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  15m   default-scheduler  Successfully assigned crud-app/postgres-0 to minikube
+  Normal  Pulled     15m   kubelet            Container image "postgres:14-alpine" already present on machine
+  Normal  Created    15m   kubelet            Created container: postgres
+  Normal  Started    15m   kubelet            Started container postgres
+\n\n
+=== Describing pod/web-5d56bbdd54-82995 ===
+Name:             web-5d56bbdd54-82995
+Namespace:        crud-app
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 13 Mar 2025 17:58:05 +0500
+Labels:           app=web
+                  pod-template-hash=5d56bbdd54
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.58
+IPs:
+  IP:           10.244.0.58
+Controlled By:  ReplicaSet/web-5d56bbdd54
+Containers:
+  web:
+    Container ID:   docker://a26062e39aa034b5614154db1921f1a9ed81b1b1cb73257745fab4b12767f0b3
+    Image:          intikhab49/myapp-web:latest
+    Image ID:       docker-pullable://intikhab49/myapp-web@sha256:7e60b25cea62acf2661cebd65e1bb8afa4e480f4ff5fcdcbf14ec31771768e95
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    127
+      Started:      Thu, 13 Mar 2025 18:10:39 +0500
+      Finished:     Thu, 13 Mar 2025 18:10:39 +0500
+    Ready:          False
+    Restart Count:  7
+    Limits:
+      memory:  1Gi
+    Requests:
+      memory:   1Gi
+    Liveness:   http-get http://:5000/health delay=120s timeout=5s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:5000/health delay=120s timeout=5s period=10s #success=1 #failure=20
+    Environment:
+      DATABASE_URL:  postgresql://postgres:postgres@postgres:5432/mydb
+      FLASK_ENV:     development
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-4m4nd (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-4m4nd:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  15m                   default-scheduler  Successfully assigned crud-app/web-5d56bbdd54-82995 to minikube
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 43.116s (43.117s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.389s (11.118s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.958s (2.958s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     13m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.972s (2.972s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     12m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.975s (2.975s including waiting). Image size: 322246766 bytes.
+  Normal   Created    11m (x6 over 14m)     kubelet            Created container: web
+  Normal   Started    11m (x6 over 14m)     kubelet            Started container web
+  Normal   Pulled     11m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.011s (3.011s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     8m19s                 kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.975s (4.981s including waiting). Image size: 322246766 bytes.
+  Warning  BackOff    4m29s (x58 over 14m)  kubelet            Back-off restarting failed container web in pod web-5d56bbdd54-82995_crud-app(9391d9ae-63f7-481c-a4b6-4c300adb670c)
+  Normal   Pulling    3m7s (x8 over 15m)    kubelet            Pulling image "intikhab49/myapp-web:latest"
+\n\n
+=== Describing pod/web-5d56bbdd54-d67tz ===
+Name:             web-5d56bbdd54-d67tz
+Namespace:        crud-app
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 13 Mar 2025 17:58:05 +0500
+Labels:           app=web
+                  pod-template-hash=5d56bbdd54
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.57
+IPs:
+  IP:           10.244.0.57
+Controlled By:  ReplicaSet/web-5d56bbdd54
+Containers:
+  web:
+    Container ID:   docker://1a116e148dba3666e7a48f4f066abf12f932652657a61f53953546ba05a874d7
+    Image:          intikhab49/myapp-web:latest
+    Image ID:       docker-pullable://intikhab49/myapp-web@sha256:7e60b25cea62acf2661cebd65e1bb8afa4e480f4ff5fcdcbf14ec31771768e95
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    127
+      Started:      Thu, 13 Mar 2025 18:10:35 +0500
+      Finished:     Thu, 13 Mar 2025 18:10:35 +0500
+    Ready:          False
+    Restart Count:  7
+    Limits:
+      memory:  1Gi
+    Requests:
+      memory:   1Gi
+    Liveness:   http-get http://:5000/health delay=120s timeout=5s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:5000/health delay=120s timeout=5s period=10s #success=1 #failure=20
+    Environment:
+      DATABASE_URL:  postgresql://postgres:postgres@postgres:5432/mydb
+      FLASK_ENV:     development
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-lnvxj (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-lnvxj:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  15m                   default-scheduler  Successfully assigned crud-app/web-5d56bbdd54-d67tz to minikube
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.994s (53.356s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.827s (15.065s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     13m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.923s (5.014s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     13m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.947s (2.947s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     12m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.98s (2.98s including waiting). Image size: 322246766 bytes.
+  Normal   Created    11m (x6 over 14m)     kubelet            Created container: web
+  Normal   Started    11m (x6 over 14m)     kubelet            Started container web
+  Normal   Pulled     11m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.094s (3.094s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     8m22s                 kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.006s (3.006s including waiting). Image size: 322246766 bytes.
+  Warning  BackOff    4m19s (x53 over 14m)  kubelet            Back-off restarting failed container web in pod web-5d56bbdd54-d67tz_crud-app(997fe9cc-8ea0-4aba-ac4c-4128e4238d47)
+  Normal   Pulling    3m17s (x8 over 15m)   kubelet            Pulling image "intikhab49/myapp-web:latest"
+\n\n
+=== Describing pod/web-5d56bbdd54-qlqd8 ===
+Name:             web-5d56bbdd54-qlqd8
+Namespace:        crud-app
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 13 Mar 2025 17:58:05 +0500
+Labels:           app=web
+                  pod-template-hash=5d56bbdd54
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.56
+IPs:
+  IP:           10.244.0.56
+Controlled By:  ReplicaSet/web-5d56bbdd54
+Containers:
+  web:
+    Container ID:   docker://51b45b95efc5417c2a3baebc1cb22d92f4edd3277e3169e88ffe8075e62a661a
+    Image:          intikhab49/myapp-web:latest
+    Image ID:       docker-pullable://intikhab49/myapp-web@sha256:7e60b25cea62acf2661cebd65e1bb8afa4e480f4ff5fcdcbf14ec31771768e95
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    127
+      Started:      Thu, 13 Mar 2025 18:10:33 +0500
+      Finished:     Thu, 13 Mar 2025 18:10:33 +0500
+    Ready:          False
+    Restart Count:  7
+    Limits:
+      memory:  1Gi
+    Requests:
+      memory:   1Gi
+    Liveness:   http-get http://:5000/health delay=120s timeout=5s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:5000/health delay=120s timeout=5s period=10s #success=1 #failure=20
+    Environment:
+      DATABASE_URL:  postgresql://postgres:postgres@postgres:5432/mydb
+      FLASK_ENV:     development
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-rmcpt (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-rmcpt:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  15m                   default-scheduler  Successfully assigned crud-app/web-5d56bbdd54-qlqd8 to minikube
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.917s (50.364s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 5.234s (14.297s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.721s (5.679s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     13m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.269s (3.269s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     12m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.166s (3.166s including waiting). Image size: 322246766 bytes.
+  Normal   Created    11m (x6 over 14m)     kubelet            Created container: web
+  Normal   Started    11m (x6 over 14m)     kubelet            Started container web
+  Normal   Pulled     11m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.262s (3.262s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     8m41s                 kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.395s (3.396s including waiting). Image size: 322246766 bytes.
+  Warning  BackOff    4m21s (x53 over 14m)  kubelet            Back-off restarting failed container web in pod web-5d56bbdd54-qlqd8_crud-app(5e0ccb73-9947-48bf-87f6-fae5cf9f5474)
+  Normal   Pulling    3m31s (x8 over 15m)   kubelet            Pulling image "intikhab49/myapp-web:latest"
+\n\n
+=== Describing pod/web-6888d5cf99-vw7d6 ===
+Name:             web-6888d5cf99-vw7d6
+Namespace:        crud-app
+Priority:         0
+Service Account:  default
+Node:             minikube/192.168.49.2
+Start Time:       Thu, 13 Mar 2025 17:58:24 +0500
+Labels:           app=web
+                  pod-template-hash=6888d5cf99
+Annotations:      <none>
+Status:           Running
+IP:               10.244.0.60
+IPs:
+  IP:           10.244.0.60
+Controlled By:  ReplicaSet/web-6888d5cf99
+Containers:
+  web:
+    Container ID:   docker://f7901fa86673c9e637070e0ee793da6be70b693c646afd6366f48b67e92bc910
+    Image:          intikhab49/myapp-web:latest
+    Image ID:       docker-pullable://intikhab49/myapp-web@sha256:7e60b25cea62acf2661cebd65e1bb8afa4e480f4ff5fcdcbf14ec31771768e95
+    Port:           5000/TCP
+    Host Port:      0/TCP
+    State:          Waiting
+      Reason:       CrashLoopBackOff
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    127
+      Started:      Thu, 13 Mar 2025 18:10:42 +0500
+      Finished:     Thu, 13 Mar 2025 18:10:42 +0500
+    Ready:          False
+    Restart Count:  7
+    Limits:
+      memory:  1Gi
+    Requests:
+      memory:   1Gi
+    Liveness:   http-get http://:5000/health delay=180s timeout=5s period=10s #success=1 #failure=3
+    Readiness:  http-get http://:5000/health delay=180s timeout=5s period=10s #success=1 #failure=20
+    Environment:
+      DATABASE_URL:  postgresql://postgres:postgres@postgres.crud-app.svc.cluster.local:5432/mydb
+      FLASK_ENV:     development
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-zlr52 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-zlr52:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  15m                   default-scheduler  Successfully assigned crud-app/web-6888d5cf99-vw7d6 to minikube
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.949s (42.318s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     14m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.925s (13.594s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     13m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 3.09s (3.09s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     13m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.982s (3.925s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     12m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 4.429s (4.429s including waiting). Image size: 322246766 bytes.
+  Normal   Created    11m (x6 over 14m)     kubelet            Created container: web
+  Normal   Started    11m (x6 over 14m)     kubelet            Started container web
+  Normal   Pulled     11m                   kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.895s (4.907s including waiting). Image size: 322246766 bytes.
+  Normal   Pulled     8m16s                 kubelet            Successfully pulled image "intikhab49/myapp-web:latest" in 2.937s (7.917s including waiting). Image size: 322246766 bytes.
+  Warning  BackOff    4m19s (x52 over 14m)  kubelet            Back-off restarting failed container web in pod web-6888d5cf99-vw7d6_crud-app(200081fb-0904-4f76-9dc2-3b77bd456853)
+  Normal   Pulling    3m5s (x8 over 15m)    kubelet            Pulling image "intikhab49/myapp-web:latest"
+\n\n

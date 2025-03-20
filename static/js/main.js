@@ -50,9 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function createUser(userData) {
         const response = await fetch('/users', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
         if (!response.ok) throw new Error('Failed to create user');
@@ -62,9 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function updateUser(userId, userData) {
         const response = await fetch(`/users/${userId}`, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
         if (!response.ok) throw new Error('Failed to update user');
