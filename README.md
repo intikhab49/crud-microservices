@@ -1,21 +1,25 @@
 # CRUD Microservices
 
-A scalable CRUD application built with microservices, deployable on **Kubernetes** (with Flannel overlay networking) or **Docker Swarm**. Features `nginx` as a reverse proxy, a `web` app for CRUD operations, a `logging-service` for event tracking, and `postgres` with persistent storage.
+A scalable CRUD application built with microservices, deployable on **Kubernetes** (with Flannel overlay networking) or **Docker Swarm**. Features `nginx` as a reverse proxy, a `web` app for CRUD operations, a `logging-service` for event tracking, `postgres` with persistent storage, and `Prometheus` for metrics monitoring.
 
 ## Overview
-This project is a microservices-based CRUD app for managing users via a web interface and REST API. It supports dual orchestration with Kubernetes (using Flannel) and Docker Swarm, and includes a dedicated logging service for observability.
+This project is a microservices-based CRUD app for managing users via a web interface and REST API. It supports dual orchestration with Kubernetes (using Flannel) and Docker Swarm, includes a dedicated logging service for observability, and uses Prometheus to monitor application metrics.
 
 ### Components
 - **nginx**: Reverse proxy routing requests to the web app and serving static files.
-- **web**: Flask app handling CRUD operations (`/users`) and a web UI.
+- **web**: Flask app handling CRUD operations (`/users`) and a web UI, exposing metrics at `/metrics`.
 - **postgres**: Database with persistent storage for user data.
-- **logging-service**: Dedicated service logging events to `crud-logs.log` via `/logs`.
+- **logging-service**: Dedicated service logging events to `crud-logs.log` via `/logs`, with metrics at `/metrics`.
+- **prometheus**: Monitoring system scraping metrics from `web` and `logging-service`.
 
 ### Features
 - **CRUD Operations**: Create, read, update, and delete users via `/users` API and UI.
 - **Logging**: Events (e.g., user creation) logged to a separate service.
+- **Monitoring**: Prometheus tracks HTTP requests and system metrics.
 - **Dual Orchestration**: Runs on Kubernetes with Flannel overlay or Docker Swarm with its built-in overlay network.
 - **Persistent Storage**: Postgres data survives restarts.
+
+
 
 ## File Structure
 
@@ -54,7 +58,12 @@ This project is a microservices-based CRUD app for managing users via a web inte
     ├── uv.lock                       # Dependency lock file (optional)
     ├── replit.nix                    # Replit config (optional)
      └── pycache/                  # Python cache (ignored)
+     |__prometheus
+        |__prometheus-config.yaml   # Prometheus config map
+        |__prometheus-deployment.yaml Prometheus deployment and service
+
     text
+
 
 ## Prerequisites
 - **Docker**: For building images.
@@ -62,6 +71,13 @@ This project is a microservices-based CRUD app for managing users via a web inte
 - **kubectl**: For managing Kubernetes.
 - **Docker Swarm**: For Swarm deployment.
 - **Git**: For cloning the repo.
+
+## Setup Instructions
+
+### Clone the Repository
+```bash
+git clone https://github.com/intikhab49/crud-microservices.git
+cd crud-microservices
 
 ## Setup Instructions
 
@@ -103,6 +119,10 @@ kubectl apply -f web-deployment.yaml
 kubectl apply -f nginx-deployment.yaml
 kubectl apply -f logging-deployment.yaml
 kubectl apply -f web-to-postgres-policy.yaml  # Optional network policy
+cd prometheus 
+kubectl apply -f prometheus-config.yaml
+kubectl apply -f prometheus-deployment.yaml
+
 Access the App:
 bash
 minikube service nginx --url
@@ -194,5 +214,5 @@ Notes
     File Structure: Matches your ls output exactly, including optional files like docker-compose.yml, deploy.sh, etc.
     Flannel: Added to Kubernetes setup with --cni=flannel.
     Docker Swarm: Included with a sample docker-stack.yml (you’ll need to add it to your repo if you want Swarm support).
-    Prometheus: Excluded since you haven’t added it yet.
+    Prometheus:  Added to components, features, file structure, and Kubernetes setup.
     Extras: Kept optional files in the structure but didn’t detail them in setup unless critical.
