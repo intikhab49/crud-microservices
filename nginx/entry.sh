@@ -1,28 +1,22 @@
 #!/bin/sh
-echo "Starting Nginx container..."
-echo "Network details:"
-exec nginx -g "daemon off;" 
-ip addr show
-echo "DNS configuration:"
-cat /etc/resolv.conf
+echo "Starting Nginx with dependency verification..."
 
-# Add retry logic for web service
-echo "Resolving web service..."
-for i in $(seq 1 15); do
-    if nslookup web 127.0.0.11; then
-        echo "Successfully resolved web on attempt $i"
-        break
-    else
-        echo "Failed to resolve web on attempt $i, retrying in 5s..."
-        sleep 5
-    fi
-done
+# Verify configuration syntax first
+nginx -t || exit 1
 
-echo "Waiting for web healthcheck..."
-until curl -f --connect-timeout 10 http://web:5000/health; do
-    echo "Waiting for web service... $(date)"
+# Wait for web service
+echo "Checking web service..."
+while ! nc -z web 5000; do
+    echo "Web service not ready - retrying in 5 seconds..."
     sleep 5
 done
 
-echo "web is up, starting nginx"
-exec nginx -g "daemon off;"
+# Wait for logging service
+echo "Checking logging service..."
+while ! nc -z logging-service 5001; do
+    echo "Logging service not ready - retrying in 5 seconds..."
+    sleep 5
+done
+
+echo "All dependencies verified, starting Nginx"
+exec nginx -g 'daemon off;'

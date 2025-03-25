@@ -14,13 +14,13 @@ spec:
     spec:
       containers:
       - name: web
-        image: myapp-web:latest # Replace with your timestamp
+        image: intikhab49/myapp-web:v3.2
         imagePullPolicy: Never
         env:
         - name: DATABASE_URL
-          value: postgresql://postgres:password@postgres:5432/mydb
+          value: "postgresql://postgres:password@postgres:5432/mydb"
         - name: FLASK_ENV
-          value: development
+          value: "development"
         ports:
         - containerPort: 5000
         resources:

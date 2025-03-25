@@ -1,33 +1,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: logging-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx
+      app: logging-service
   template:
     metadata:
       labels:
-        app: nginx
+        app: logging-service
     spec:
       containers:
-      - name: nginx
-        image: intikhab49/new-nginx-name:v1.1
+      - name: logging-service
+        image: intikhab49/logging-service:v3.1
         imagePullPolicy: Never
         ports:
-        - containerPort: 80
+        - containerPort: 5001
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx
+  name: logging-service
 spec:
   selector:
-    app: nginx
+    app: logging-service
   ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 30242
-  type: NodePort
+  - port: 5001
+    targetPort: 5001
