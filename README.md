@@ -19,42 +19,42 @@ This project is a microservices-based CRUD app for managing users via a web inte
 
 ## File Structure
 
-crud-microservices/
-├── app.py                         # Web app (Flask CRUD)
-├── Dockerfile                    # Web app Dockerfile
-├── requirements.txt              # Web app dependencies
-├── static/                       # Static files (e.g., CSS)
-│   └── example.css
-├── templates/                    # HTML templates
-│   └── index.html
-├── web-deployment.yaml           # Web deployment and service (Kubernetes)
-├── web-to-postgres-policy.yaml   # Network policy for web-to-postgres access
-├── postgres-deployment.yaml      # Postgres deployment and service (Kubernetes)
-├── nginx/                        # Nginx configuration
-│   ├── default.conf             # Nginx default config (optional)
-│   ├── Dockerfile               # Nginx Dockerfile
-│   ├── entry.sh                 # Nginx entry script
-│   └── nginx.conf               # Nginx main config
-├── nginx-deployment.yaml         # Nginx deployment and service (Kubernetes)
-├── logging-service/              # Logging service
-│   ├── Dockerfile               # Logging service Dockerfile
-│   ├── log_service.py           # Logging service script
-│   └── requirements.txt         # Logging service dependencies
-├── logging-deployment.yaml       # Logging service deployment and service (Kubernetes)
-├── docker-compose.yml            # Docker Compose file (optional, for local dev)
-├── deploy.sh                     # Deployment script (if used)
-├── start.sh                      # Start script (if used)
-├── default.conf                  # Additional Nginx config (optional)
-├── generated-icon.png            # Icon file (optional)
-├── main.py                       # Alternative main script (optional)
-├── models.py                     # Database models (optional)
-├── network-policy.yaml           # Additional network policy (optional)
-├── pod_diag.txt                  # Pod diagnostics (optional)
-├── pyproject.toml                # Python project config (optional)
-├── uv.lock                       # Dependency lock file (optional)
-├── replit.nix                    # Replit config (optional)
-└── pycache/                  # Python cache (ignored)
-text
+      crud-microservices/
+      ├── app.py                         # Web app (Flask CRUD)
+      ├── Dockerfile                    # Web app Dockerfile
+      ├── requirements.txt              # Web app dependencies
+      ├── static/                       # Static files (e.g., CSS)
+      │   └── example.css
+     ├── templates/                    # HTML templates
+     │    └── index.html
+     ├── web-deployment.yaml           # Web deployment and service (Kubernetes)
+    ├── web-to-postgres-policy.yaml   # Network policy for web-to-postgres access
+    ├── postgres-deployment.yaml      # Postgres deployment and service (Kubernetes)
+     ├── nginx/                        # Nginx configuration
+     │   ├── default.conf             # Nginx default config (optional)
+     │   ├── Dockerfile               # Nginx Dockerfile
+      │   ├── entry.sh                 # Nginx entry script
+     │   └── nginx.conf               # Nginx main config
+     ├── nginx-deployment.yaml         # Nginx deployment and service (Kubernetes)
+    ├── logging-service/              # Logging service
+    │   ├── Dockerfile               # Logging service Dockerfile
+     │   ├── log_service.py           # Logging service script
+    │   └── requirements.txt         # Logging service dependencies
+    ├── logging-deployment.yaml       # Logging service deployment and service (Kubernetes)
+     ├── docker-compose.yml            # Docker Compose file (optional, for local dev)
+    ├── deploy.sh                     # Deployment script (if used)
+    ├── start.sh                      # Start script (if used)
+    ├── default.conf                  # Additional Nginx config (optional)
+    ├── generated-icon.png            # Icon file (optional)
+    ├── main.py                       # Alternative main script (optional)
+     ├── models.py                     # Database models (optional)
+    ├── network-policy.yaml           # Additional network policy (optional)
+     ├── pod_diag.txt                  # Pod diagnostics (optional)
+     ├── pyproject.toml                # Python project config (optional)
+    ├── uv.lock                       # Dependency lock file (optional)
+    ├── replit.nix                    # Replit config (optional)
+     └── pycache/                  # Python cache (ignored)
+    text
 
 ## Prerequisites
 - **Docker**: For building images.
@@ -96,7 +96,7 @@ bash
     minikube image load intikhab49/logging-service:v3.1
     cd ..
 
-Deploy to Minikube:
+##Deploy to Minikube:
 bash
 kubectl apply -f postgres-deployment.yaml
 kubectl apply -f web-deployment.yaml
