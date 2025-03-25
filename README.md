@@ -135,7 +135,31 @@ minikube service nginx --url
         curl http://192.168.49.2:30242/users          # List users
         curl -X POST http://192.168.49.2:30242/users -H "Content-Type: application/json" -d '{"name": "Intikhab", "email": "intikhab@example.com"}'  # Add user
         curl -X POST http://192.168.49.2:30242/logs -H "Content-Type: application/json" -d '{"event": "test"}'  # Log event
+PROMETHEUS GUIDE >>>>
+ Port-Forward Prometheus
 
+
+bash
+kubectl port-forward svc/prometheus 9090:9090
+
+    Should say: Forwarding from 127.0.0.1:9090 -> 9090.
+    Open http://localhost:9090 in your browser.
+
+2. Check Targets
+
+    Go to Status > Targets.
+    Look for:
+        web:5000 (job web).
+        logging-service:5001 (job logging-service).
+    They should be UP.
+
+3. Query Metrics in Prometheus
+
+In the Graph tab:
+
+    requests_total{job="web"}: Should match your curl output (e.g., 3.0 for /users POST).
+    flask_http_request_total{job="logging-service"}: Should show POSTs to /logs (e.g., 1.0 or more from earlier tests).
+    Try rate(requests_total{job="web"}[5m]) for requests per second.
 Option 2: Docker Swarm
 
     Initialize Swarm:
