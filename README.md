@@ -56,7 +56,7 @@ This project is a microservices-based CRUD app for managing users via a web inte
      ├── pod_diag.txt                  # Pod diagnostics (optional)
      ├── pyproject.toml                # Python project config (optional)
     ├── uv.lock                       # Dependency lock file (optional)
-    ├── replit.nix                    # Replit config (optional)
+    ├── 
      └── pycache/                  # Python cache (ignored)
      |__prometheus
         |__prometheus-config.yaml   # Prometheus config map
